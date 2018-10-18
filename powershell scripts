@@ -1,0 +1,6 @@
+#Powershell cmdlets
+
+#$credential = Get-Credential
+
+$secpasswd = ConvertTo-SecureString "64431YYUQqLH" -AsPlainText -Force
+
