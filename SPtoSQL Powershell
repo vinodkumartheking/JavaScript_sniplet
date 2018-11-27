@@ -1,0 +1,70 @@
+    class Program
+    {
+        public static string conStr = "Data Source=xx.xx.xxx.xx;Initial Catalog=DBname;Integrated Security=true";
+
+        static void Main(string[] args)
+        {
+            try
+            {
+                SqlConnection conn = new SqlConnection(conStr);
+                SqlCommand cmd = new SqlCommand();
+                cmd.CommandText = "truncate table testtable";
+                cmd.Connection = conn;
+                conn.Open();
+                cmd.ExecuteNonQuery();
+
+                ClientContext context = new ClientContext("http://siteurl/");
+
+                List sharePointlist = context.Web.Lists.GetByTitle("listname");
+                CamlQuery query = CamlQuery.CreateAllItemsQuery();
+                query.ViewXml = "<View><Query><Where><And><IsNotNull><FieldRef Name ='EmailID'></FieldRef></IsNotNull><IsNotNull><FieldRef Name ='columnName'></FieldRef></IsNotNull></And></Where></Query></View>";
+                ListItemCollection items = sharePointlist.GetItems(query);
+
+
+                context.Load(items);
+                context.ExecuteQuery();
+                foreach (ListItem listItem in items)
+                {
+                    if (listItem["columnName"].ToString().Contains("Owned") != true)
+                    {
+                        Console.WriteLine(listItem["ID"].ToString(), listItem["columnName"].ToString(), listItem["columnName"].ToString());
+                        cmd.CommandText = "insert into tableName values('" + listItem["columnName"].ToString() + "','" + listItem["columnName"].ToString() + "','" + listItem["columnName"].ToString() + "')";
+
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                cmd.CommandText = "truncate table AnotherTable";
+                
+                cmd.ExecuteNonQuery();
+
+                List Subscribe = context.Web.Lists.GetByTitle("AnotherList");
+                CamlQuery query1 = CamlQuery.CreateAllItemsQuery();
+                query.ViewXml = "<View><Query><Where><IsNotNull><FieldRef Name ='columnName'></FieldRef></IsNotNull></Where></Query></View>";
+                ListItemCollection unSubscribedUseritems = Subscribe.GetItems(query1);
+
+
+                context.Load(unSubscribedUseritems);
+                context.ExecuteQuery();
+                foreach (ListItem listItem in unSubscribedUseritems)
+                {
+                    if (listItem["columnName"].ToString().Contains("Owned") != true)
+                    {
+                        
+                        cmd.CommandText = "insert into [dbo].[tableName] values('" + listItem["columnName"].ToString() + "')";
+                        cmd.Connection = conn;
+
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+                conn.Close();
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine("error on function"+ex.ToString());
+            }
+            
+
+        }
+    }
