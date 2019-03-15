@@ -1,0 +1,24 @@
+function requestToken() {  
+  
+        $.ajax({  
+            "async": true,  
+            "crossDomain": true,  
+            "url": "https://cors-anywhere.herokuapp.com/https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token", // Pass your tenant name instead of sharepointtechie
+            "method": "POST",  
+            "headers": {  
+                "content-type": "application/x-www-form-urlencoded"  
+            },  
+            "data": {  
+                "grant_type": "client_credentials",  
+                "client_id ": "234234-234234-234234-234234", //Provide your app id
+                "client_secret": "******", //Provide your client secret genereated from your app
+                "scope ": "https://graph.microsoft.com/.default"  
+            },  
+            success: function(response) {  
+                console.log(response);  
+                token = response.access_token;
+               alert(token)
+            }  
+  
+        })  
+    }
