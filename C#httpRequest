@@ -1,0 +1,46 @@
+ public static void MakeRequest(string url, string memeType,string sapId,string userName)
+        {
+            var request = (HttpWebRequest)WebRequest.Create(url);
+
+            request.Credentials = CredentialCache.DefaultCredentials;
+
+            request.Method = "POST";
+            request.ContentLength = 0;
+            request.ContentType = "application/x-www-form-urlencoded";
+            var postData ="";
+            
+
+            var data = Encoding.ASCII.GetBytes(postData);
+
+            request.ContentLength = data.Length;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            using (var stream = request.GetRequestStream())
+            {
+                stream.Write(data, 0, data.Length);
+            }
+
+
+
+            using (var response = (HttpWebResponse)request.GetResponse())
+            {
+                var responseValue = string.Empty;
+                var returnResponse = string.Empty;
+
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    var message = String.Format("Request failed. Received HTTP {0}", response.StatusCode);
+                    throw new ApplicationException(message);
+                }
+
+                // grab the response
+                using (var responseStream = response.GetResponseStream())
+                {
+                    if (responseStream != null)
+                        using (var reader = new StreamReader(responseStream))
+                        {
+                            responseValue = reader.ReadToEnd();
+                            string[] strArrayOne = new string[] { "" };
+                            //somewhere in your code
+                        }
+                 }
